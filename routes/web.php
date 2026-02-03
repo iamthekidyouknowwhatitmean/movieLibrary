@@ -24,11 +24,6 @@ Route::get('/watchlist', [WatchListController::class, 'index']);
 Route::get('/settings', [UserController::class, 'index'])->middleware('auth');
 Route::patch('/settings/{user}', [UserController::class, 'update'])->middleware('auth');
 
-//Route::get('/likes',[])
-Route::get('/login', [SessionController::class, 'create'])->middleware('guest');
-Route::post('/login', [SessionController::class, 'store'])->middleware('guest');
-Route::post('/logout', [SessionController::class, 'destroy'])->middleware('auth');
-
 Route::get('/films/genre', GenreController::class);
 Route::get('/films/add', [FilmsController::class, 'create']); // перенос на форму добавление фильма, только админ
 Route::delete('/films/{film}', [FilmsController::class, 'destroy']); // удаление одного фильма

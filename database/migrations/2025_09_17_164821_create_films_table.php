@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('poster_path')->nullable();
             $table->string('backdrop_path')->nullable();
             $table->text('overview')->nullable();
+            $table->boolean('adult')->default(false);
             $table->timestamps();
         });
     }

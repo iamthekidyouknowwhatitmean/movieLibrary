@@ -3,41 +3,68 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class TmdbService
 {
     protected $apiKey;
     protected $baseUrl;
-    protected $language;
+    protected $proxy;
 
     public function __construct()
     {
         $this->apiKey = config('tmdb.api_key');
         $this->baseUrl = config('tmdb.base_url');
-        $this->language = config('tmdb.language');
+        $this->proxy = config('tmdb.proxy');
     }
 
-    public function getPopularMovies($page = 2)
+    private function client()
     {
-        $response = Http::withOptions([
-            'proxy' => 'http://127.0.0.1:12334'
-        ])->get("{$this->baseUrl}/movie/popular", [
-            'api_key' => $this->apiKey,
-            'language' => $this->language,
-            'page' => 1
-        ]);
+        $options = [];
 
-        return $response->json();
+        if ($this->proxy) {
+            $options['proxy'] = $this->proxy;
+        }
+
+        return Http::withOptions($options);
     }
-    public function getAllGenres()
+
+    public function getMovie($id)
     {
-        $response = Http::withOptions([
-            'proxy' => 'http://127.0.0.1:12334'
-        ])->get("{$this->baseUrl}/genre/movie/list", [
-            'api_key' => $this->apiKey,
-            'language' => $this->language,
-        ]);
+        try {
+            $response = $this->client()->get("{$this->baseUrl}/movie/$id", [
+                'api_key'  => $this->apiKey,
+                'language' => 'en-En',
+            ]);
 
-        return $response->json()['genres'];
+            return $response->json();
+        } catch (\Exception $e) {
+            Log::error('TMDB API Error: ' . $e->getMessage());
+            throw $e;
+        }
     }
+
+    // public function getPopularMovies($page = 2)
+    // {
+    //     $response = Http::withOptions([
+    //         'proxy' => 'socks5h://127.0.0.1:12334'
+    //     ])->get("{$this->baseUrl}/movie/popular", [
+    //         'api_key' => $this->apiKey,
+    //         'language' => $this->language,
+    //         'page' => 1
+    //     ]);
+
+    //     return $response->json();
+    // }
+    // public function getAllGenres()
+    // {
+    //     $response = Http::withOptions([
+    //         'proxy' => 'socks5h://127.0.0.1:12334'
+    //     ])->get("{$this->baseUrl}/genre/movie/list", [
+    //         'api_key' => $this->apiKey,
+    //         'language' => $this->language,
+    //     ]);
+
+    //     return $response->json()['genres'];
+    // }
 }
