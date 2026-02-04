@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('films', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('tmdb_id')->unique();
+            $table->enum('category',['popular','top_rated','upcoming','now_playing']);
             $table->string('title');
             $table->date('release_date')->nullable();
             $table->string('poster_path')->nullable();

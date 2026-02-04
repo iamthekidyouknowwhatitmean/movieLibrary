@@ -14,7 +14,7 @@ class ImportMoviesFromTmdb extends Command
      *
      * @var string
      */
-    protected $signature = 'tmdb:import {--page=1}';
+    protected $signature = 'tmdb:import';
 
     /**
      * The console command description.
@@ -51,45 +51,62 @@ class ImportMoviesFromTmdb extends Command
      */
     public function handle()
     {
-        $pages = $this->option('page');
-        for($p = 1;$p <= $pages;$p++)
+        $continue = true;
+        while($continue)
         {
-           $response = $this->client()->get(
-            "{$this->baseUrl}/movie/top_rated",
-            [
-                'api_key'  => $this->apiKey,
-                'language' => 'ru-RU',
-                'page'     => $p,
-            ]);
+            $category = $this->choice(
+                'Выберите категорию фильмов для импорта:',
+                ['top_rated', 'popular', 'upcoming', 'now_playing'],
+                0
+            );
 
-            $currentFilms = $response->json()['results'];
-            $batch=[];
-            $threshold = 20;
+            $pages = (int)$this->ask('Сколько страниц импортировать? (20 фильмов на страницу)', '1');
 
-            foreach($currentFilms as $film)
+            for($p = 1;$p <= $pages;$p++)
             {
-                $batch[] = [
-                    'tmdb_id' => $film['id'],
-                    'title' => $film['title'],
-                    'release_date' => $film['release_date'] ?? null,
-                    'poster_path' => $film['poster_path'] ?? null,
-                    'backdrop_path' => $film['backdrop_path'] ?? null,
-                    'overview' => $film['overview'] ?? null,
-                    'adult' => $film['adult'] ?? null,
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now(),
-                ];
+                $response = $this->client()->get(
+                "{$this->baseUrl}/movie/{$category}",
+                [
+                    'api_key'  => $this->apiKey,
+                    'language' => 'ru-RU',
+                    'page'     => $p,
+                ]);
 
-                if(count($batch) >= $threshold)
+                $currentFilms = $response->json()['results'];
+                $batch=[];
+                $threshold = 20;
+
+                foreach($currentFilms as $film)
                 {
-                    DB::table('films')->upsert($batch,['tmdb_id'],['title','release_date','poster_path','backdrop_path','overview','adult','updated_at']);
-                    $batch = [];
+                    $batch[] = [
+                        'tmdb_id' => $film['id'],
+                        'category' => $category,
+                        'title' => $film['title'],
+                        'release_date' => $film['release_date'] ?? null,
+                        'poster_path' => $film['poster_path'] ?? null,
+                        'backdrop_path' => $film['backdrop_path'] ?? null,
+                        'overview' => $film['overview'] ?? null,
+                        'adult' => $film['adult'] ?? null,
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now(),
+                    ];
+
+                    if(count($batch) >= $threshold)
+                    {
+                        DB::table('films')->upsert($batch,['tmdb_id'],['title','release_date','poster_path','backdrop_path','overview','adult','updated_at']);
+                        $batch = [];
+                    }
                 }
+            }
+
+            $this->info('Фильмы успешно импортированы.');
+
+            $answer = $this->ask('Вы хотитет продолжить? (yes/no)', 'yes');
+            if (strtolower($answer) !== 'yes') {
+                $continue = false;
             }
         }
 
-        $this->info('Фильмы успешно импортированы.');
-
-
+        $this->info('Импорт завершен.');
     }
 }

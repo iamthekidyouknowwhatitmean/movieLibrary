@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use App\Http\Filters\QueryFilter;
 use Laravel\Scout\Searchable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class Films extends Model
 {
@@ -31,6 +33,11 @@ class Films extends Model
             'updated_at' => $this->updated_at,
 
         ];
+    }
+
+    public function scopeFilter(Builder $builder, QueryFilter $filters)
+    {
+        return $filters->apply($builder);
     }
 
     public function users() // ????????

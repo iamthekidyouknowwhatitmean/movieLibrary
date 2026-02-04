@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Filters\FilmsFilter;
 use App\Models\Films;
 use App\Models\Genre;
 use App\Services\TmdbService;
@@ -20,18 +21,11 @@ class FilmsController extends Controller
         // dd($this->tmdb->getPopularMovies());
     }
 
-    public function index()
+    public function index(FilmsFilter $filters)
     {
-        $allFilms = Films::paginate(20);
-        $genres = Genre::all();
-        return view('films.all', [
-            'allFilms' => $allFilms,
-            'genres' => $genres
-        ]);
+        $films = Films::filter($filters)->paginate(20);
 
-        // $films = $this->tmdb->getPopularMovies();
-        // dd($films);
-        // return view('films.all', ['allFilms' => $films['results']]);
+        return response()->json($films);
     }
 
     /**

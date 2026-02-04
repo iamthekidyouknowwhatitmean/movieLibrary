@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\FilmsController;
 use App\Http\Controllers\SettingsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -18,4 +19,7 @@ Route::post('/settings',[SettingsController::class,'update'])->middleware('auth:
 // Изменение пароля
 Route::post('/settings/auth',[SettingsController::class,'changePassword'])->middleware('auth:sanctum');
 
-//
+//Показ фильмов
+Route::get('/films', [FilmsController::class,'index'])->middleware('auth:sanctum');
+
+
