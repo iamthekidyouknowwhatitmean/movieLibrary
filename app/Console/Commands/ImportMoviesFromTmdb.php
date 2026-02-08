@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Films;
+use App\Models\Genre;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -14,7 +16,7 @@ class ImportMoviesFromTmdb extends Command
      *
      * @var string
      */
-    protected $signature = 'tmdb:import';
+    protected $signature = 'tmdb:i';
 
     /**
      * The console command description.
@@ -64,16 +66,19 @@ class ImportMoviesFromTmdb extends Command
 
             for($p = 1;$p <= $pages;$p++)
             {
-                $response = $this->client()->get(
-                "{$this->baseUrl}/movie/{$category}",
-                [
-                    'api_key'  => $this->apiKey,
-                    'language' => 'ru-RU',
-                    'page'     => $p,
-                ]);
+                $response = $this->client()
+                ->get(
+                    "{$this->baseUrl}/movie/{$category}",
+                    [
+                        'api_key'  => $this->apiKey,
+                        'language' => 'ru-RU',
+                        'page'     => $p,
+                    ]);
+
 
                 $currentFilms = $response->json()['results'];
                 $batch=[];
+                $batchOfGenres = [];
                 $threshold = 20;
 
                 foreach($currentFilms as $film)
@@ -87,16 +92,34 @@ class ImportMoviesFromTmdb extends Command
                         'backdrop_path' => $film['backdrop_path'] ?? null,
                         'overview' => $film['overview'] ?? null,
                         'adult' => $film['adult'] ?? null,
+                        'popularity' => $film['popularity'] ?? null,
+                        'vote_average' => $film['vote_average'] ?? null,
+                        'vote_count' => $film['vote_count'] ?? null,
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now(),
                     ];
+                    $batchOfGenres[$film['id']] = $film['genre_ids'];
 
                     if(count($batch) >= $threshold)
                     {
                         DB::table('films')->upsert($batch,['tmdb_id'],['title','release_date','poster_path','backdrop_path','overview','adult','updated_at']);
+                        foreach($batchOfGenres as $filmId=>$genreIds){
+                            $film = DB::table('films')->where('tmdb_id',$filmId)->value('id');
+                            foreach($genreIds as $genreId){
+                                $genre = DB::table('genres')->where('tmdb_id',$genreId)->value('id');
+                                DB::table('film_genre')->insert([
+                                    'films_id' => $film,
+                                    'genre_id' => $genre
+                                ]);
+                            }
+                        }
                         $batch = [];
+                        $batchOfGenres = [];
                     }
                 }
+
+                // проверять, что batch пуст и если это так, догрузить в таблицу оставшиеся данные
+
             }
 
             $this->info('Фильмы успешно импортированы.');

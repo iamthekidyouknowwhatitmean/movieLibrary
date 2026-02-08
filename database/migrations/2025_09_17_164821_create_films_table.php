@@ -21,6 +21,9 @@ return new class extends Migration
             $table->string('backdrop_path')->nullable();
             $table->text('overview')->nullable();
             $table->boolean('adult')->default(false);
+            $table->float('popularity');
+            $table->float('vote_average');
+            $table->float('vote_count');
             $table->timestamps();
         });
     }

@@ -18,7 +18,6 @@ class QueryFilter
     public function apply(Builder $builder)
     {
         $this->builder = $builder;
-
         foreach ($this->request->all() as $key => $value) {
             if (method_exists($this, $key)) {
                 $this->$key($value);
