@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('watch_lists', function (Blueprint $table) {
+        Schema::create('watched', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(User::class);
             $table->foreignIdFor(Films::class);
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('watch_lists');
+        Schema::dropIfExists('watched');
     }
 };

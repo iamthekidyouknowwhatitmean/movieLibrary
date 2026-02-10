@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\FilmsResource;
 use App\Models\Films;
 use App\Models\User;
 use App\Models\WatchList;
@@ -16,15 +17,7 @@ class WatchListController extends Controller
     public function index()
     {
 
-        dd(User::find(Auth::id())->watchlist);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return FilmsResource::collection(User::find(Auth::id())->watchlist);
     }
 
     /**
@@ -32,43 +25,8 @@ class WatchListController extends Controller
      */
     public function store(Films $film)
     {
-        $attributes = [
-            'user_id' => Auth::id(),
-            'films_id' => $film->id,
-        ];
-        WatchList::create($attributes);
-        return redirect('/films');
+        Auth::user()->watchlist()->attach($film->id);
+        return response()->json('success',202);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(WatchList $watchList)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(WatchList $watchList)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, WatchList $watchList)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(WatchList $watchList)
-    {
-        //
-    }
 }

@@ -4,6 +4,11 @@ namespace App\Http\Filters;
 
 class FilmsFilter extends QueryFilter
 {
+    protected $sortable = [
+        'popularity',
+        'vote_average',
+        'release_date'
+    ];
     public function category(string $value)
     {
         $this->builder->where('category', $value);
