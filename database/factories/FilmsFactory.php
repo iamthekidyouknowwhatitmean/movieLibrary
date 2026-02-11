@@ -17,7 +17,17 @@ class FilmsFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->word()
+            'tmdb_id'       => $this->faker->unique()->numberBetween(1, 9999999),
+            'category'      => $this->faker->randomElement(['popular', 'top_rated', 'upcoming', 'now_playing']),
+            'title'         => $this->faker->sentence(3),
+            'release_date'  => $this->faker->optional()->date(),
+            'poster_path'   => $this->faker->optional()->imageUrl(),
+            'backdrop_path' => $this->faker->optional()->imageUrl(),
+            'overview'      => $this->faker->optional()->paragraph(),
+            'adult'         => $this->faker->boolean(10),
+            'popularity'    => $this->faker->randomFloat(2, 0, 10000),
+            'vote_average'  => $this->faker->randomFloat(1, 0, 10),
+            'vote_count'    => $this->faker->randomFloat(0, 0, 10000),
         ];
     }
 }

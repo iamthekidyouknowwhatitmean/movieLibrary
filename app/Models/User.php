@@ -107,7 +107,7 @@ class User extends Authenticatable
 
     public function watchlist()
     {
-        return $this->belongsToMany(Films::class, 'watch_list');
+        return $this->belongsToMany(Films::class, 'watchlist');
     }
 
     public function watched()

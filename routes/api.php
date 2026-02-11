@@ -31,14 +31,21 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::get('/likes', [LikeController::class,'index']);
     // Добавление в таблицу понравившихся фильмов (likes)
     Route::post('/likes/{film}',[LikeController::class,'store']);
+    // Удаление из таблицы понравившегося фильма
+    Route::delete('/likes/{film}',[LikeController::class,'destroy']);
 
     // Фильмы, для просмотра в будущем
     Route::get('/watchlist',[WatchListController::class,'index']);
     // Добавление в таблицу фильмов, для просмотра в будущем
     Route::post('/watchlist/{film}',[WatchListController::class,'store']);
+    // Удаление из таблицы фильмов, для просмотра в будущем
+    Route::delete('/watchlist/{film}',[WatchListController::class,'destroy']);
+
 
     // Фильмы, просмотренные пользователем
     Route::get('/watched',[WatchedController::class,'index']);
     // Добавление в таблицу фильмов, уже просмотренных пользователем
     Route::post('/watched/{film}',[WatchedController::class,'store']);
+    // Удаление из таблицы фильмов, уже просмотренных пользователем
+    Route::delete('/watched/{film}',[WatchedController::class,'destroy']);
 });

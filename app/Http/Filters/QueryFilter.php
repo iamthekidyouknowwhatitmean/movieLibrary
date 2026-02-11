@@ -10,6 +10,7 @@ class QueryFilter
     protected $request;
     protected $builder;
     protected $sortable = [];
+
     public function __construct(Request $request)
     {
         $this->request = $request;

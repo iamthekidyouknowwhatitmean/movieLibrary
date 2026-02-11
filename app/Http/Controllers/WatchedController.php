@@ -18,6 +18,16 @@ class WatchedController extends Controller
     public function store(Films $film)
     {
         Auth::user()->watched()->attach($film->id);
-        return response()->json('success',202);
+        return response()->json([
+            'message' => 'success',
+        ],200);
+    }
+
+    public function destroy(Films $film)
+    {
+        Auth::user()->watched()->detach($film->id);
+        return response()->json([
+            'message' => 'success',
+        ],200);
     }
 }

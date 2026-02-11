@@ -13,14 +13,6 @@ class FilmsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    protected $tmdb;
-
-    public function __construct(TmdbService $tmdb)
-    {
-        $this->tmdb = $tmdb;
-        // dd($this->tmdb->getPopularMovies());
-    }
-
     public function index(FilmsFilter $filters)
     {
         $films = Films::filter($filters)->paginate(20);
