@@ -23,7 +23,12 @@ return new class extends Migration
             $table->boolean('adult')->default(false);
             $table->float('popularity');
             $table->float('vote_average');
-            $table->float('vote_count');
+            $table->integer('vote_count');
+            $table->integer('budget');
+            $table->integer('revenue');
+            $table->integer('runtime');
+            $table->string('status');
+            $table->string('tagline');
             $table->timestamps();
         });
     }
