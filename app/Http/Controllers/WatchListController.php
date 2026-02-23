@@ -8,16 +8,21 @@ use App\Models\User;
 use App\Models\WatchList;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Http\Filters\FilmsFilter;
 
 class WatchListController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(FilmsFilter $filters)
     {
+        $watchlist = Auth::user()
+                    ->watchlist()
+                    ->filter($filters)
+                    ->paginate(20);
 
-        return FilmsResource::collection(User::find(Auth::id())->watchlist);
+        return FilmsResource::collection($watchlist);
     }
 
     /**

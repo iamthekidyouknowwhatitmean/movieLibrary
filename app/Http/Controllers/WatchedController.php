@@ -7,12 +7,18 @@ use App\Models\User;
 use App\Models\Films;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Filters\FilmsFilter;
 
 class WatchedController extends Controller
 {
-    public function index()
+    public function index(FilmsFilter $filters)
     {
-        return FilmsResource::collection(User::find(Auth::id())->watched);
+        $watchedFilms = Auth::user()
+                    ->watched()
+                    ->filter($filters)
+                    ->paginate(20);
+
+        return FilmsResource::collection($watchedFilms);
     }
 
     public function store(Films $film)
