@@ -12,8 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('genres', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('tmdb_id')->unique();
+            $table->unsignedBigInteger('tmdb_id')->primary();
             $table->string('name');
             $table->timestamps();
         });

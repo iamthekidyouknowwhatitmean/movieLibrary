@@ -64,7 +64,9 @@ class Films extends Model
     //     'name'
     // ];
     protected $guarded = [];
-
+    protected $primaryKey = 'tmdb_id';
+    public $incrementing = false;
+    protected $keyType = 'int';
 
     public function toSearchableArray()
     {

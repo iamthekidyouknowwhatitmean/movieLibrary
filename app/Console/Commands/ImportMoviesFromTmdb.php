@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Client\Pool;
 
 class ImportMoviesFromTmdb extends Command
 {
@@ -48,6 +49,16 @@ class ImportMoviesFromTmdb extends Command
         return Http::withOptions($options);
     }
 
+    private function flushToDatabase(array $batchOfFilms, array $batchOfGenres) {
+        Films::upsert(
+            $batchOfFilms,
+            ['tmdb_id'],
+            ['title','release_date','poster_path','backdrop_path','overview','adult','budget','revenue',
+            'runtime','status','tagline','updated_at']
+        );
+        $fl = DB::table('film_genre')->insertOrIgnore($batchOfGenres);
+    }
+
     /**
      * Execute the console command.
      */
@@ -64,22 +75,32 @@ class ImportMoviesFromTmdb extends Command
 
             $pages = (int)$this->ask('Сколько страниц импортировать? (20 фильмов на страницу)', '1');
 
+            $batch=[];
+            $batchOfGenres = [];
+            $threshold = 500;
             for($p = 1;$p <= $pages;$p++)
             {
                 $response = $this->client()
-                ->get(
+                    ->retry(3,200)
+                    ->get(
                     "{$this->baseUrl}/movie/{$category}",
                     [
                         'api_key'  => $this->apiKey,
                         'language' => 'ru-RU',
                         'page'     => $p,
-                    ]);
+                    ])
+                    ->json();
 
+                $films = collect($response['results']);
 
-                $currentFilms = $response->json()['results'];
-                $batch=[];
-                $batchOfGenres = [];
-                $threshold = 20;
+                $currentFilms = Http::pool(fn (Pool $pool) => $films->map(fn($film) =>
+                    $pool->withOptions([
+                        'proxy' => $this->proxy,
+                    ])->get("{$this->baseUrl}/movie/{$film['id']}",[
+                        'api_key'  => $this->apiKey,
+                        'language' => 'ru-RU',
+                    ])
+                ));
 
                 foreach($currentFilms as $film)
                 {
@@ -95,31 +116,34 @@ class ImportMoviesFromTmdb extends Command
                         'popularity' => $film['popularity'] ?? null,
                         'vote_average' => $film['vote_average'] ?? null,
                         'vote_count' => $film['vote_count'] ?? null,
+                        'budget' => $film['budget'],
+                        'revenue' => $film['revenue'],
+                        'runtime' => $film['runtime'],
+                        'status' => $film['status'],
+                        'tagline' => $film['tagline'],
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now(),
                     ];
-                    $batchOfGenres[$film['id']] = $film['genre_ids'];
+
+                    foreach($film['genres'] as $genre)
+                    {
+                        $batchOfGenres[] = [
+                            'film_id' => $film['id'],
+                            'genre_id' => $genre['id']
+                        ];
+                    }
 
                     if(count($batch) >= $threshold)
                     {
-                        DB::table('films')->upsert($batch,['tmdb_id'],['title','release_date','poster_path','backdrop_path','overview','adult','updated_at']);
-                        foreach($batchOfGenres as $filmId=>$genreIds){
-                            $film = DB::table('films')->where('tmdb_id',$filmId)->value('id');
-                            foreach($genreIds as $genreId){
-                                $genre = DB::table('genres')->where('tmdb_id',$genreId)->value('id');
-                                DB::table('film_genre')->insert([
-                                    'films_id' => $film,
-                                    'genre_id' => $genre
-                                ]);
-                            }
-                        }
+                        $this->flushToDatabase($batch,$batchOfGenres);
                         $batch = [];
                         $batchOfGenres = [];
                     }
                 }
-
-                // проверять, что batch пуст и если это так, догрузить в таблицу оставшиеся данные
-
+            }
+            if(!empty($batch))
+            {
+                $this->flushToDatabase($batch,$batchOfGenres);
             }
 
             $this->info('Фильмы успешно импортированы.');
