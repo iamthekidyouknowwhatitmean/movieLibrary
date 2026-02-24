@@ -88,6 +88,11 @@ class Films extends Model
         return $filters->apply($builder);
     }
 
+    public function countries()
+    {
+        return $this->belongsToMany(ProductionCountries::class);
+    }
+
     public function users() // ????????
     {
         return $this->belongsToMany(User::class, 'user_film');

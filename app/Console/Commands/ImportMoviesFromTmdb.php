@@ -4,6 +4,9 @@ namespace App\Console\Commands;
 
 use App\Models\Films;
 use App\Models\Genre;
+use App\Models\Languages;
+use App\Models\ProductionCountries;
+use App\Models\ProductionCompanies;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -49,14 +52,59 @@ class ImportMoviesFromTmdb extends Command
         return Http::withOptions($options);
     }
 
-    private function flushToDatabase(array $batchOfFilms, array $batchOfGenres) {
+    private function flushToDatabase(
+        array $batchOfFilms,
+        array $batchOfGenres,
+        array $batchOfCompanies,
+        array $batchOfCompaniesPivot,
+        array $batchOfCountries,
+        array $batchOfCountriesPivot,
+        array $batchOfLanguages,
+        array $batchOfLanguagesPivot
+    ) {
         Films::upsert(
             $batchOfFilms,
             ['tmdb_id'],
             ['title','release_date','poster_path','backdrop_path','overview','adult','budget','revenue',
             'runtime','status','tagline','updated_at']
         );
-        $fl = DB::table('film_genre')->insertOrIgnore($batchOfGenres);
+        ProductionCountries::upsert(
+            $batchOfCountries,
+            ['iso_3166_1'],
+            ['name']
+        );
+        ProductionCompanies::upsert(
+            $batchOfCompanies,
+            ['id'],
+            ['logo_path','name','origin_country']
+        );
+        Languages::upsert(
+            $batchOfLanguages,
+            ['iso_639_1'],
+            ['english_name','name']
+        );
+
+        DB::table('film_genre')->upsert(
+            $batchOfGenres,
+            ['film_id','genre_id'],
+            ['film_id','genre_id']
+        );
+        DB::table('film_country')->upsert(
+            $batchOfCountriesPivot,
+            ['country_iso'],
+            ['film_id']
+        );
+        DB::table('film_companie')->upsert(
+            $batchOfCompaniesPivot,
+            ['film_id','companie_id'],
+            ['film_id','companie_id']
+        );
+        DB::table('film_language')->upsert(
+            $batchOfLanguagesPivot,
+            ['film_id'],
+            ['film_id','companie_id']
+        );
+
     }
 
     /**
@@ -77,6 +125,13 @@ class ImportMoviesFromTmdb extends Command
 
             $batch=[];
             $batchOfGenres = [];
+            $batchOfCompanies = [];
+            $batchOfCompaniesPivot = [];
+            $batchOfCountries = [];
+            $batchOfCountriesPivot = [];
+            $batchOfLanguages = [];
+            $batchOfLanguagesPivot = [];
+
             $threshold = 500;
             for($p = 1;$p <= $pages;$p++)
             {
@@ -133,17 +188,68 @@ class ImportMoviesFromTmdb extends Command
                         ];
                     }
 
+                    foreach($film['production_companies'] as $companie)
+                    {
+                        $batchOfCompanies[] = $companie;
+                        $batchOfCompaniesPivot[] = [
+                            'film_id' => $film['id'],
+                            'companie_id' => $companie['id']
+                        ];
+                    }
+
+                    foreach($film['production_countries'] as $country)
+                    {
+                        $batchOfCountries[] = $country;
+                        $batchOfCountriesPivot[] = [
+                            'film_id' => $film['id'],
+                            'country_iso' => $country['iso_3166_1']
+                        ];
+                    }
+
+                    foreach($film['spoken_languages'] as $language)
+                    {
+                        $batchOfLanguages[] = $language;
+                        $batchOfLanguagesPivot[] = [
+                            'film_id' => $film['id'],
+                            'language_iso' => $language['iso_639_1']
+                        ];
+                    }
                     if(count($batch) >= $threshold)
                     {
-                        $this->flushToDatabase($batch,$batchOfGenres);
+                        $this->flushToDatabase(
+                            $batch,
+                            $batchOfGenres,
+                            $batchOfCompanies,
+                            $batchOfCompaniesPivot,
+                            $batchOfCountries,
+                            $batchOfCountriesPivot,
+                            $batchOfLanguages,
+                            $batchOfLanguagesPivot
+                        );
                         $batch = [];
                         $batchOfGenres = [];
+                        $batchOfCompanies = [];
+                        $batchOfCompaniesPivot = [];
+                        $batchOfCountries = [];
+                        $batchOfCountriesPivot = [];
+                        $batchOfLanguages = [];
+                        $batchOfLanguagesPivot = [];
                     }
                 }
             }
+
             if(!empty($batch))
             {
-                $this->flushToDatabase($batch,$batchOfGenres);
+                $this->flushToDatabase(
+                    $batch,
+                    $batchOfGenres,
+                    $batchOfCompanies,
+                    $batchOfCompaniesPivot,
+                    $batchOfCountries,
+                    $batchOfCountriesPivot,
+                    $batchOfLanguages,
+                    $batchOfLanguagesPivot
+                );
             }
 
             $this->info('Фильмы успешно импортированы.');

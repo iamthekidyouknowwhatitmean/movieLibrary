@@ -11,11 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('film_companie', function (Blueprint $table) {
-            $table->foreignId('film_id')->constrained('films', 'tmdb_id')->onDelete('cascade');
-            $table->foreignId('companie_id')->constrained('companies','id')->onDelete('cascade');
-
-            $table->unique(['film_id','companie_id']);
+        Schema::create('production_countries', function (Blueprint $table) {
+            $table->char('iso_3166_1',length:3)->primary();
+            $table->string('name');
             $table->timestamps();
         });
     }
@@ -25,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('film_companie');
+        Schema::dropIfExists('production_countries');
     }
 };

@@ -11,11 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('film_companie', function (Blueprint $table) {
+        Schema::create('film_language', function (Blueprint $table) {
+            $table->char('language_iso',length:3);
             $table->foreignId('film_id')->constrained('films', 'tmdb_id')->onDelete('cascade');
-            $table->foreignId('companie_id')->constrained('companies','id')->onDelete('cascade');
 
-            $table->unique(['film_id','companie_id']);
+            $table->foreign('language_iso')
+                ->references('iso_639_1')
+                ->on('languages')
+                ->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -25,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('film_companie');
+        Schema::dropIfExists('film_language');
     }
 };
