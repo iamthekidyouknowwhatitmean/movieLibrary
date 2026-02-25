@@ -64,7 +64,7 @@ class ImportMoviesFromTmdb extends Command
     ) {
         Films::upsert(
             $batchOfFilms,
-            ['tmdb_id'],
+            ['id'],
             ['title','release_date','poster_path','backdrop_path','overview','adult','budget','revenue',
             'runtime','status','tagline','updated_at']
         );
@@ -101,8 +101,8 @@ class ImportMoviesFromTmdb extends Command
         );
         DB::table('film_language')->upsert(
             $batchOfLanguagesPivot,
-            ['film_id'],
-            ['film_id','companie_id']
+            ['language_iso'],
+            ['film_id']
         );
 
     }
@@ -160,7 +160,7 @@ class ImportMoviesFromTmdb extends Command
                 foreach($currentFilms as $film)
                 {
                     $batch[] = [
-                        'tmdb_id' => $film['id'],
+                        'id' => $film['id'],
                         'category' => $category,
                         'title' => $film['title'],
                         'release_date' => $film['release_date'] ?? null,

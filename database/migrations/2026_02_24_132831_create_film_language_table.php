@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('film_language', function (Blueprint $table) {
             $table->char('language_iso',length:3);
-            $table->foreignId('film_id')->constrained('films', 'tmdb_id')->onDelete('cascade');
+            $table->foreignId('film_id')->constrained('films', 'id')->onDelete('cascade');
 
             $table->foreign('language_iso')
                 ->references('iso_639_1')

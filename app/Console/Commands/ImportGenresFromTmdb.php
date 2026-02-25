@@ -63,7 +63,7 @@ class ImportGenresFromTmdb extends Command
         foreach($genres as $genre)
         {
             Genre::create([
-                'tmdb_id' => $genre['id'],
+                'id' => $genre['id'],
                 'name' => $genre['name']
             ]);
         }
