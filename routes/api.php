@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\FilmsController;
+use App\Http\Controllers\FilmDetailsController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\WatchedController;
@@ -26,6 +27,9 @@ Route::middleware('auth:sanctum')->group(function(){
 
     // Фильмы
     Route::get('/films', [FilmsController::class,'index']);
+
+    // Детальная страница фильма
+    Route::get('/film/{film}',[FilmDetailsController::class,'index']);
 
     // Фильмы, которые лайкнул пользователь
     Route::get('/likes', [LikeController::class,'index']);

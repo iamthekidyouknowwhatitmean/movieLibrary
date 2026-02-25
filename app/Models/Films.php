@@ -64,7 +64,6 @@ class Films extends Model
     //     'name'
     // ];
     protected $guarded = [];
-    protected $primaryKey = 'tmdb_id';
     public $incrementing = false;
     protected $keyType = 'int';
 
@@ -72,7 +71,6 @@ class Films extends Model
     {
         return [
             'id' => (int) $this->id,
-            'tmdb_id' => $this->tmdb_id,
             'title' => $this->title,
             'release_date' => (int) $this->release_date,
             'poster_path' => $this->poster_path,

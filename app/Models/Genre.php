@@ -8,7 +8,6 @@ class Genre extends Model
 {
     protected $guarded = [];
 
-    protected $primaryKey = 'tmdb_id';
     public $incrementing = false;
     protected $keyType = 'int';
 }
