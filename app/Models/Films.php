@@ -96,24 +96,9 @@ class Films extends Model
         return $this->belongsToMany(User::class, 'user_film');
     }
 
-    public function ratings()
-    {
-        return $this->hasMany(Rating::class);
-    }
-
-    public function reviews()
-    {
-        return $this->hasMany(Review::class);
-    }
-
     public function genres()
     {
         return $this->belongsToMany(Genre::class, 'film_genre');
-    }
-
-    public function likes() // пока хз зачем
-    {
-        return $this->hasMany(Like::class, 'likes');
     }
 
 

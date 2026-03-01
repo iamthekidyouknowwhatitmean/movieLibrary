@@ -8,6 +8,7 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\WatchedController;
 use App\Http\Controllers\WatchListController;
+use App\Http\Controllers\RatingContoller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -45,11 +46,15 @@ Route::middleware('auth:sanctum')->group(function(){
     // Удаление из таблицы фильмов, для просмотра в будущем
     Route::delete('/watchlist/{film}',[WatchListController::class,'destroy']);
 
-
     // Фильмы, просмотренные пользователем
     Route::get('/watched',[WatchedController::class,'index']);
     // Добавление в таблицу фильмов, уже просмотренных пользователем
     Route::post('/watched/{film}',[WatchedController::class,'store']);
     // Удаление из таблицы фильмов, уже просмотренных пользователем
     Route::delete('/watched/{film}',[WatchedController::class,'destroy']);
+
+    // Оценка фильма
+    Route::post('/rating',[RatingContoller::class,'store']);
+    // Удаление оценки фильма
+    Route::delete('/rating',[RatingContoller::class,'destroy']);
 });

@@ -15,11 +15,7 @@ class FilmsResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'type' => 'films',
-            'id' => $this->id,
-            'attributes' => [
-                'backdrop_path' => $this->backdrop_path,
-            ]
+            'backdrop_path' => $this->backdrop_path,
         ];
     }
 }
