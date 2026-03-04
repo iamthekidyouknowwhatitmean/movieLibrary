@@ -101,9 +101,13 @@ class Films extends Model
         return $this->belongsToMany(Genre::class, 'film_genre');
     }
 
-
     public function likedByUsers() // Пользователи, которые лайкнули фильм
     {
         return $this->belongsToMany(User::class, 'likes');
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class,'film_id');
     }
 }

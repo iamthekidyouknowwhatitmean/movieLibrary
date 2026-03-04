@@ -9,6 +9,7 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\WatchedController;
 use App\Http\Controllers\WatchListController;
 use App\Http\Controllers\RatingContoller;
+use App\Http\Controllers\ReviewController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -57,4 +58,8 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('/rating',[RatingContoller::class,'store']);
     // Удаление оценки фильма
     Route::delete('/rating',[RatingContoller::class,'destroy']);
+
+    Route::post('/review',[ReviewController::class,'store']);
+    Route::delete('/review/{filmId}',[ReviewController::class,'destroy']);
+    Route::patch('/review/{filmId}',[ReviewController::class,'update']);
 });
