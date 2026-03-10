@@ -86,14 +86,14 @@ class Films extends Model
         return $filters->apply($builder);
     }
 
+    public function scopeSearch(Builder $builder,string $terms)
+    {
+        return $builder->where('title',$terms);
+    }
+
     public function countries()
     {
         return $this->belongsToMany(ProductionCountries::class);
-    }
-
-    public function users() // ????????
-    {
-        return $this->belongsToMany(User::class, 'user_film');
     }
 
     public function genres()
@@ -101,7 +101,7 @@ class Films extends Model
         return $this->belongsToMany(Genre::class, 'film_genre');
     }
 
-    public function likedByUsers() // Пользователи, которые лайкнули фильм
+    public function likedByUsers()
     {
         return $this->belongsToMany(User::class, 'likes');
     }
