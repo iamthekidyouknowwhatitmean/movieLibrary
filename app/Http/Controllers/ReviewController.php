@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Review;
 use App\Models\Films;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Activity;
 
 class ReviewController extends Controller
 {
@@ -26,6 +27,13 @@ class ReviewController extends Controller
             'content' => $request->input('content'),
             'film_id' => $request->input('film_id'),
             'user_id' => Auth::id()
+        ]);
+
+        Activity::create([
+            'user_id' => Auth::id(),
+            'type' => 'review',
+            'activitable_type' => Review::class,
+            'activitable_id' => Auth::user()->reviews()->orderBy('reviews.id','desc')->first()->id
         ]);
     }
 

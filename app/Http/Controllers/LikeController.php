@@ -6,6 +6,7 @@ use App\Http\Resources\FilmsResource;
 use App\Models\Films;
 use App\Models\Like;
 use App\Models\User;
+use App\Models\Activity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Filters\FilmsFilter;
@@ -21,14 +22,18 @@ class LikeController extends Controller
                     ->likedFilms()
                     ->filter($filters)
                     ->paginate(20);
-
         return FilmsResource::collection($likedFilms);
     }
 
     public function store(Films $film)
     {
-        $result = Auth::user()->likedFilms()->attach($film->id);
-
+        $x = Auth::user()->likedFilms()->attach($film->id);
+        Activity::create([
+            'user_id' => Auth::id(),
+            'type' => 'like',
+            'activitable_type' => Films::class,
+            'activitable_id' => Auth::user()->likedFilms()->orderBy('likes.id','desc')->first()->id
+        ]);
         return response()->json([
             'message' => 'success',
         ],200);

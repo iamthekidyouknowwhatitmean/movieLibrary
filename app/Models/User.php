@@ -102,7 +102,7 @@ class User extends Authenticatable
 
     public function likedFilms()
     {
-        return $this->belongsToMany(Films::class, 'likes');
+        return $this->belongsToMany(Films::class, 'likes')->withTimestamps();
     }
 
     public function watchlist()
