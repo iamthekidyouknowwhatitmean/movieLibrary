@@ -13,4 +13,9 @@ class Review extends Model
     {
         return $this->morphMany(Activity::class,'activitable');
     }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }

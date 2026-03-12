@@ -112,7 +112,7 @@ class User extends Authenticatable
 
     public function watched()
     {
-        return $this->belongsToMany(Films::class, 'watched');
+        return $this->belongsToMany(Films::class, 'watched')->withTimestamps();
     }
     /**
      * Get the attributes that should be cast.

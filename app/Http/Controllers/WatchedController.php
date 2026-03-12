@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\FilmsResource;
 use App\Models\User;
 use App\Models\Films;
+use App\Models\Activity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Filters\FilmsFilter;
@@ -23,7 +24,15 @@ class WatchedController extends Controller
 
     public function store(Films $film)
     {
-        Auth::user()->watched()->attach($film->id);
+        $temp = Auth::user()->watched();
+        $temp->attach($film->id);
+
+        Activity::create([
+            'user_id' => Auth::id(),
+            'type' => 'watched',
+            'activitable_type' => Films::class,
+            'activitable_id' => $temp->orderBy('watched.id','desc')->first()->id
+        ]);
         return response()->json([
             'message' => 'success',
         ],200);

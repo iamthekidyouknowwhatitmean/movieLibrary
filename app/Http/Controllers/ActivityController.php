@@ -13,9 +13,9 @@ class ActivityController extends Controller
      */
     public function index()
     {
-        foreach(Activity::all() as $activity)
+        foreach(Activity::where('user_id',Auth::id())->orderByDesc('created_at')->get() as $activity)
         {
-            echo($activity->activitable);
+            echo($activity);
         }
     }
 
