@@ -169,8 +169,6 @@ class ImportMoviesFromTmdb extends Command
                         'overview' => $film['overview'] ?? null,
                         'adult' => $film['adult'] ?? null,
                         'popularity' => $film['popularity'] ?? null,
-                        'vote_average' => $film['vote_average'] ?? null,
-                        'vote_count' => $film['vote_count'] ?? null,
                         'budget' => $film['budget'],
                         'revenue' => $film['revenue'],
                         'runtime' => $film['runtime'],

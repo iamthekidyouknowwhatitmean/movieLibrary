@@ -108,7 +108,6 @@ class User extends Authenticatable
         return $this->hasMany(Review::class);
     }
 
-
     public function likedFilms()
     {
         return $this->belongsToMany(Films::class, 'likes')->withTimestamps();

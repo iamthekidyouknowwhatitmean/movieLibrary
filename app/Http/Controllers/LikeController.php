@@ -27,13 +27,7 @@ class LikeController extends Controller
 
     public function store(Films $film)
     {
-        $x = Auth::user()->likedFilms()->attach($film->id);
-        Activity::create([
-            'user_id' => Auth::id(),
-            'type' => 'like',
-            'activitable_type' => Films::class,
-            'activitable_id' => Auth::user()->likedFilms()->orderBy('likes.id','desc')->first()->id
-        ]);
+        $likedFilm= Auth::user()->likedFilms()->syncWithoutDetaching($film->id);
         return response()->json([
             'message' => 'success',
         ],200);

@@ -31,7 +31,8 @@ class ReviewController extends Controller
         $film = Films::find($request->input('film_id'));
         $newAverage = round((($film->vote_average * $film->vote_count) + $request->input('rating')) / ($film->vote_count + 1),3);
         $film->update([
-           'vote_average' => $newAverage
+           'vote_average' => $newAverage,
+           'vote_count' => $film->vote_count+1
         ]);
 
         Review::create([
@@ -65,9 +66,20 @@ class ReviewController extends Controller
      */
     public function update(Request $request, string $filmId)
     {
-        $review = Auth::user()->reviews()->where('film_id',$filmId)->first();
+        $request->validate([
+            'body' => 'nullable|string|required_without:rating',
+            'rating' => 'nullable|integer|min:1|max:5|required_without:body',
+        ]);
 
-        if($request->has('likes')){
+        $review = Auth::user()->reviews()->where('film_id',$filmId)->first();
+        $film = Films::find($filmId);
+        $newAverage = round((($film->vote_average * $film->vote_count) - $film->vote_average + $request->input('rating')) / ($film->vote_count + 1),3);
+        $film->update([
+            'vote_average' => $newAverage,
+            'vote_count' => $film->vote_count-1
+        ]);
+
+        if($request->boolean('likes')){
             Activity::create([
                 'user_id' => Auth::id(),
                 'type' => 'like',
@@ -77,7 +89,8 @@ class ReviewController extends Controller
         }
         $review->update([
             'body' => $request->input('body'),
-            'likes' => $request->has('likes') ? $review->likes + 1 : $review->likes
+            'likes' => $request->has('like') ? $review->likes + 1 : $review->likes,
+            'rating' => $request->input('rating')
         ]);
     }
 

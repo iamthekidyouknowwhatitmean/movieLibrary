@@ -31,7 +31,7 @@ class CommentController extends Controller
      */
     public function store(Request $request)
     {
-        Comment::create([
+        $comment = Comment::create([
             'body' => $request->input('body'),
             'user_id' => Auth::id(),
             'review_id' => $request->input('review_id')
@@ -40,8 +40,8 @@ class CommentController extends Controller
         Activity::create([
             'user_id' => Auth::id(),
             'type' => 'comment',
-            'activitable_type' => Review::class,
-            'activitable_id' => Auth::user()->reviews()->orderBy('reviews.id','desc')->first()->id
+            'activitable_type' => Comment::class,
+            'activitable_id' => $comment->id
         ]);
 
     }

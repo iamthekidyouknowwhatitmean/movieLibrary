@@ -82,6 +82,8 @@ class Films extends Model
         ];
     }
 
+    //public function addRating
+
     public function scopeFilter(Builder $builder, QueryFilter $filters)
     {
         return $filters->apply($builder);

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Activity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -33,6 +34,13 @@ class NetworkController extends Controller
     {
         Auth::user()->following()->syncWithoutDetaching([
             'following_id' => $following->id
+        ]);
+
+        Activity::create([
+            'user_id' => Auth::id(),
+            'type' => 'following',
+            'activitable_type' => User::class,
+            'activitable_id' => Auth::user()->following()->orderBy('network.id','desc')->first()->id
         ]);
     }
 
