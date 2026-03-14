@@ -83,6 +83,15 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    public function following()
+    {
+        return $this->belongsToMany(User::class,'network','user_id','following_id');
+    }
+
+    public function followers()
+    {
+        return $this->belongsToMany(User::class,'network','following_id','user_id');
+    }
 
     public function films() // ???????
     {

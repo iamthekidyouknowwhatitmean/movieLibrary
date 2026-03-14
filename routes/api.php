@@ -13,6 +13,7 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\NetworkController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -32,6 +33,13 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('/settings',[SettingsController::class,'update']);
     // Изменение пароля
     Route::post('/settings/auth',[SettingsController::class,'changePassword']);
+
+    Route::get('/network/following',[NetworkController::class,'following']); // пользователи, за которыми мы следим
+    Route::get('/network/followers',[NetworkController::class,'followers']); // пользователи, которые следят за нами, подписчики
+    Route::post('/network/following/{following}',[NetworkController::class,'storeFollowing']); // cоздание пользователей, за которыми мы следим
+    Route::post('/network/follower/{follower}',[NetworkController::class,'storeFollower']); // создание пользователей, которые следят за нами
+    Route::delete('/network/following/{following}',[NetworkController::class,'destroyFollowing']); // удаление пользователей, за которыми мы следим
+    Route::delete('/network/followers/{follower}',[NetworkController::class,'destroyFollower']); // удаление пользователей, которые следят за нам
 
     // Фильмы
     Route::get('/films', [FilmsController::class,'index']);
