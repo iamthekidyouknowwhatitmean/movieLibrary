@@ -75,8 +75,8 @@ Route::middleware('auth:sanctum')->group(function(){
 
     Route::get('/review/{reviewId}',[ReviewController::class,'show']);
     Route::post('/review',[ReviewController::class,'store']);
-    Route::delete('/review/{filmId}',[ReviewController::class,'destroy']);
-    Route::patch('/review/{filmId}',[ReviewController::class,'update']);
+    Route::patch('/review',[ReviewController::class,'update']);
+    Route::delete('/review',[ReviewController::class,'destroy']);
 
     Route::post('/comment',[CommentController::class,'store']);
     Route::patch('/comment/{comment}',[CommentController::class,'update']);

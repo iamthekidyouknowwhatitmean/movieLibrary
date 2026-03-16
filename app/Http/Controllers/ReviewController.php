@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Review;
-use App\Models\Films;
-use Illuminate\Support\Facades\Auth;
-use App\Models\Activity;
+use App\Http\Requests\ReviewRequest;
+use App\Services\ReviewService;
 
 class ReviewController extends Controller
 {
@@ -16,38 +14,6 @@ class ReviewController extends Controller
     public function index()
     {
         //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'body' => 'nullable|string|required_without:rating',
-            'rating' => 'nullable|integer|min:1|max:5|required_without:body',
-        ]);
-
-        $film = Films::find($request->input('film_id'));
-        $newAverage = round((($film->vote_average * $film->vote_count) + $request->input('rating')) / ($film->vote_count + 1),3);
-        $film->update([
-           'vote_average' => $newAverage,
-           'vote_count' => $film->vote_count+1
-        ]);
-
-        Review::create([
-            'body' => $request->input('body'),
-            'rating' => $request->input('rating'),
-            'film_id' => $request->input('film_id'),
-            'user_id' => Auth::id()
-        ]);
-
-        Activity::create([
-            'user_id' => Auth::id(),
-            'type' => 'create',
-            'activitable_type' => Review::class,
-            'activitable_id' => Auth::user()->reviews()->orderBy('reviews.id','desc')->first()->id
-        ]);
     }
 
     /**
@@ -62,48 +28,38 @@ class ReviewController extends Controller
     }
 
     /**
+     * Store a newly created resource in storage.
+     */
+    public function store(ReviewRequest $request,ReviewService $reviewService)
+    {
+        $filmId = $request->input('film_id');
+        $body = $request->input('body');
+        $rating = $request->input('rating');
+
+        $reviewService->store($filmId,$body,$rating);
+    }
+
+    /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $filmId)
+    public function update(ReviewRequest $request,ReviewService $reviewService)
     {
-        $request->validate([
-            'body' => 'nullable|string|required_without:rating',
-            'rating' => 'nullable|integer|min:1|max:5|required_without:body',
-        ]);
-
-        $review = Auth::user()->reviews()->where('film_id',$filmId)->first();
-        $film = Films::find($filmId);
-        $newAverage = round((($film->vote_average * $film->vote_count) - $film->vote_average + $request->input('rating')) / ($film->vote_count + 1),3);
-        $film->update([
-            'vote_average' => $newAverage,
-            'vote_count' => $film->vote_count-1
-        ]);
-
+        $filmId = $request->input('film_id');
+        $body = $request->input('body');
+        $rating = $request->input('rating');
+        $like = false;
         if($request->boolean('likes')){
-            Activity::create([
-                'user_id' => Auth::id(),
-                'type' => 'like',
-                'activitable_type' => Review::class,
-                'activitable_id' => Auth::user()->reviews()->orderBy('reviews.id','desc')->first()->id
-            ]);
+            $like = true;
         }
-        $review->update([
-            'body' => $request->input('body'),
-            'likes' => $request->has('like') ? $review->likes + 1 : $review->likes,
-            'rating' => $request->input('rating')
-        ]);
+        $reviewService->update($filmId,$body,$rating,$like);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $filmId)
+    public function destroy(Request $request,ReviewService $reviewService)
     {
-        $result = Auth::user()->reviews()->where('film_id',$filmId)->first()->delete();
-        if($result){
-            return response()->json([
-                'message' => 'Комментарий успешно удален!'
-            ]);
-        }
+        $reviewId = $request->input('review_id');
+        $reviewService->destroy($reviewId);
     }
 }
