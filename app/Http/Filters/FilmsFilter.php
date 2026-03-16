@@ -9,6 +9,7 @@ class FilmsFilter extends QueryFilter
         'vote_average',
         'release_date'
     ];
+
     public function category(string $value)
     {
         $this->builder->where('category', $value);

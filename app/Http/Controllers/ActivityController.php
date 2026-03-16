@@ -5,18 +5,21 @@ namespace App\Http\Controllers;
 use App\Models\Activity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+use App\Http\Filters\ActivitiesFilter;
 
 class ActivityController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(ActivitiesFilter $filters)
     {
-        foreach(Activity::where('user_id',Auth::id())->orderByDesc('created_at')->get() as $activity)
-        {
-            echo($activity);
-        }
+        // foreach(Activity::where('user_id',Auth::id())->orderByDesc('created_at')->get() as $activity)
+        // {
+        //     echo($activity);
+        // }
+        return Activity::filter($filters)->get();
     }
 
     /**
