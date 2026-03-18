@@ -16,7 +16,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\NetworkController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Jobs\SendWelcomeEmail;
 // Регистрация
 Route::post('/register', [RegisterController::class,'store']);
 
@@ -36,8 +36,7 @@ Route::middleware('auth:sanctum')->group(function(){
 
     Route::get('/network/following',[NetworkController::class,'following']); // пользователи, за которыми мы следим
     Route::get('/network/followers',[NetworkController::class,'followers']); // пользователи, которые следят за нами, подписчики
-    Route::post('/network/following/{following}',[NetworkController::class,'storeFollowing']); // cоздание пользователей, за которыми мы следим
-    Route::post('/network/follower/{follower}',[NetworkController::class,'storeFollower']); // создание пользователей, которые следят за нами
+    Route::post('/network/{following}',[NetworkController::class,'storeFollowing']); // cоздание пользователей, за которыми мы следим
     Route::delete('/network/following/{following}',[NetworkController::class,'destroyFollowing']); // удаление пользователей, за которыми мы следим
     Route::delete('/network/followers/{follower}',[NetworkController::class,'destroyFollower']); // удаление пользователей, которые следят за нам
 
@@ -83,4 +82,5 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::delete('/comment/{comment}',[CommentController::class,'destroy']);
 
     Route::get('/activity',[ActivityController::class,'index']);
+
 });

@@ -8,7 +8,8 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Welcome;
 class RegisterController extends Controller
 {
     /**
@@ -24,11 +25,10 @@ class RegisterController extends Controller
      */
     public function store(RegisterUserRequest $request)
     {
-        $validated = $request->validated();
+        $user = User::create($request->all());
 
-        $user = User::create($validated);
+        Mail::to($user->email)->queue(new Welcome());
 
         return new UserResource($user);
-
     }
 }

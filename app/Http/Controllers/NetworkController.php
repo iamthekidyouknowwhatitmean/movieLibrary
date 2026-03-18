@@ -7,6 +7,8 @@ use App\Models\Activity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Mail\Follower;
+use Illuminate\Support\Facades\Mail;
 
 class NetworkController extends Controller
 {
@@ -42,14 +44,10 @@ class NetworkController extends Controller
             'activitable_type' => User::class,
             'activitable_id' => Auth::user()->following()->orderBy('network.id','desc')->first()->id
         ]);
+
+        Mail::to(Auth::user()->email)->queue(new Follower(Auth::user()));
     }
 
-    public function storeFollower(User $follower)
-    {
-        Auth::user()->followers()->syncWithoutDetaching([
-            'following_id' => $follower->id
-        ]);
-    }
 
     /**
      * Display the specified resource.
