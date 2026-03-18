@@ -18,18 +18,20 @@ class ActivitiesFilter extends QueryFilter
         $this->builder
             ->selectRaw('activities.id,activities.user_id')
             ->join('network','network.following_id','=','activities.user_id')
-            ->where('network.user_id', $authUser->id)
             ->orderByDesc('activities.created_at');
     }
 
     public function all(){
         $authUser = Auth::user();
+
         $this->builder
-            ->selectRaw('activities.id,activities.user_id')
-            ->leftJoin('network', 'network.following_id', '=', 'activities.user_id')
             ->where(function ($query) use ($authUser) {
                 $query->where('activities.user_id', $authUser->id)
-                    ->orWhere('network.user_id', $authUser->id);
+                    ->orWhereIn('activities.user_id', function ($sub) use ($authUser) {
+                        $sub->select('following_id')
+                            ->from('network')
+                            ->where('user_id', $authUser->id);
+                    });
             })
             ->orderByDesc('activities.created_at');
     }
