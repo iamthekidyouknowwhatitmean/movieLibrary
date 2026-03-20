@@ -83,6 +83,11 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    public function getRouteKeyName():string
+    {
+        return 'username';
+    }
+
     public function following()
     {
         return $this->belongsToMany(User::class,'network','user_id','following_id');
@@ -98,17 +103,12 @@ class User extends Authenticatable
         return $this->belongsToMany(Films::class, "user_film");
     }
 
-    public function ratings()
-    {
-        return $this->hasMany(Rating::class);
-    }
-
     public function reviews()
     {
         return $this->hasMany(Review::class);
     }
 
-    public function likedFilms()
+    public function likes()
     {
         return $this->belongsToMany(Films::class, 'likes')->withTimestamps();
     }
@@ -121,6 +121,11 @@ class User extends Authenticatable
     public function watched()
     {
         return $this->belongsToMany(Films::class, 'watched')->withTimestamps();
+    }
+
+    public function activities()
+    {
+        return $this->hasMany(Activity::class);
     }
     /**
      * Get the attributes that should be cast.

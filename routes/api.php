@@ -14,9 +14,11 @@ use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\NetworkController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Jobs\SendWelcomeEmail;
+
 // Регистрация
 Route::post('/register', [RegisterController::class,'store']);
 
@@ -82,5 +84,16 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::delete('/comment/{comment}',[CommentController::class,'destroy']);
 
     Route::get('/activity',[ActivityController::class,'index']);
+
+    Route::prefix('/{user}')->group(function(){
+        Route::get('',[UserController::class,'index']);
+        Route::get('/watched',[UserController::class,'watched']);
+        Route::get('/likes',[UserController::class,'likes']);
+        Route::get('/watchlist',[UserController::class,'watchlist']);
+        Route::get('/following',[UserController::class,'following']);
+        Route::get('/followers',[UserController::class,'followers']);
+        Route::get('/reviews',[UserController::class,'reviews']);
+        Route::get('/activities',[UserController::class,'activities']);
+    });
 
 });

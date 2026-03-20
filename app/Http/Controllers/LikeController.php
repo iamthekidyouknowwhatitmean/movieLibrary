@@ -19,7 +19,7 @@ class LikeController extends Controller
     public function index(FilmsFilter $filters)
     {
         $likedFilms = Auth::user()
-                    ->likedFilms()
+                    ->likes()
                     ->filter($filters)
                     ->paginate(20);
         return FilmsResource::collection($likedFilms);
@@ -27,7 +27,7 @@ class LikeController extends Controller
 
     public function store(Films $film)
     {
-        $likedFilm= Auth::user()->likedFilms()->syncWithoutDetaching($film->id);
+        $likedFilm= Auth::user()->likes()->syncWithoutDetaching($film->id);
         return response()->json([
             'message' => 'success',
         ],200);
@@ -35,7 +35,7 @@ class LikeController extends Controller
 
     public function destroy(Films $film)
     {
-        Auth::user()->likedFilms()->detach($film->id);
+        Auth::user()->likes()->detach($film->id);
         return response()->json([
             'message' => 'success',
         ],200);
