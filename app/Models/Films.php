@@ -71,11 +71,9 @@ class Films extends Model
     public function toSearchableArray()
     {
         return [
-            'id' => (int) $this->id,
+            'id' => $this->getKey(),
             'title' => $this->title,
             'release_date' => (int) $this->release_date,
-            'poster_path' => $this->poster_path,
-            'backdrop_path' => $this->backdrop_path,
             'overview' => $this->overview,
             'updated_at' => $this->updated_at,
 

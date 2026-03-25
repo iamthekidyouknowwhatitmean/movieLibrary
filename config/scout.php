@@ -143,7 +143,7 @@ return [
         'key' => env('MEILISEARCH_KEY'),
         'index-settings' => [
             Films::class => [
-                'searchableAttributes' => ['id', 'title'],
+                'sortableAttributes' => ['id', 'title'],
             ],
         ],
     ],
