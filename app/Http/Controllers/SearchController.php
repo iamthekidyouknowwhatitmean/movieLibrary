@@ -15,15 +15,15 @@ class SearchController extends Controller
 
         return response()->json([
             'films' => $type === null || $type === 'films'
-            ? Films::search($value)->take(20)->get()
+            ? Films::search($value)->paginate(20)
             : [],
 
             'users' => $type === null || $type === 'users'
-                ? User::search($value)->take(20)->get()
+                ? User::search($value)->paginate(20)
                 : [],
 
             'reviews' => $type === null || $type === 'reviews'
-                ? Review::search($value)->take(20)->get()
+                ? Review::search($value)->paginate(20)
                 : [],
         ]);
     }
