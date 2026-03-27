@@ -3,7 +3,7 @@ import laravel from 'laravel-vite-plugin'
 import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
 import tailwindcss from '@tailwindcss/vite'
-
+import path from 'path';
 export default defineConfig({
   plugins: [
     laravel({
@@ -16,6 +16,7 @@ export default defineConfig({
   resolve: {
     alias: {
       vue: 'vue/dist/vue.esm-bundler.js',
+      '@r': path.resolve(__dirname, 'resources'),
     },
   },
 })
