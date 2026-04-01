@@ -10,8 +10,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\Welcome;
+use App\Traits\ApiResponses;
+
 class RegisterController extends Controller
 {
+    use ApiResponses;
     /**
      * Display a listing of the resource.
      */
@@ -25,10 +28,10 @@ class RegisterController extends Controller
      */
     public function store(RegisterUserRequest $request)
     {
-        $user = User::create($request->all());
+        $user = User::create($request->validated());
 
         Mail::to($user->email)->queue(new Welcome());
 
-        return new UserResource($user);
+        return $this->ok('Регистрация прошла успешно');
     }
 }

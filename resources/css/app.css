@@ -10,4 +10,10 @@
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
+:root{
+    --default-color: #99AABB; /* твой цвет */
+}
 
+body{
+    
+}
