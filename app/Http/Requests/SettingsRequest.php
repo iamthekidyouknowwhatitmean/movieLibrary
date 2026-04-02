@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class SettingsRequest extends FormRequest
 {
@@ -22,12 +24,17 @@ class SettingsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'data.attributes.firstName' => 'sometimes|string',
-            'data.attributes.lastName' => 'sometimes|string',
-            'data.attributes.location' => 'sometimes',
-            'data.attributes.website' => 'sometimes',
-            'data.attributes.bio' => 'sometimes',
-            'data.attributes.email' => 'sometimes|email',
+            'first_name' => 'sometimes|string|max:50',
+            'last_name'  => 'sometimes|string|max:50',
+            'location'   => 'sometimes|string|max:100',
+            'website'    => 'sometimes|nullable|url|max:255',
+            'bio'        => 'sometimes|nullable|string|max:500',
+            'email'      => [
+                'sometimes',
+                'email',
+                'max:255',
+                Rule::unique('users')->ignore(Auth::id()),
+            ],
         ];
     }
 }

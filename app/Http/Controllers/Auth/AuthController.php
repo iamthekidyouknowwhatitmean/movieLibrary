@@ -20,7 +20,7 @@ class AuthController extends Controller
             return $this->error('Invalid credentials',401);
         }
 
-        $user = User::firstWhere('email',$request->email);
+        $user = Auth::user();;
 
         return $this->ok(
             'Authenticated',

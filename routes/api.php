@@ -69,11 +69,6 @@ Route::middleware('auth:sanctum')->group(function(){
     // Удаление из таблицы фильмов, уже просмотренных пользователем
     Route::delete('/watched/{film}',[WatchedController::class,'destroy']);
 
-    // Оценка фильма
-    Route::post('/rating',[RatingContoller::class,'store']);
-    // Удаление оценки фильма
-    Route::delete('/rating',[RatingContoller::class,'destroy']);
-
     Route::get('/review/{reviewId}',[ReviewController::class,'show']);
     Route::post('/review',[ReviewController::class,'store']);
     Route::patch('/review',[ReviewController::class,'update']);

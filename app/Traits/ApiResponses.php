@@ -15,10 +15,10 @@ trait ApiResponses{
         ],$statusCode);
     }
 
-    protected function error($message,$statusCode){
+    protected function error($message,$statusCode=401){
         return response()->json([
             'message' => $message,
             'status' => $statusCode
-        ]);
+        ],$statusCode);
     }
 }
