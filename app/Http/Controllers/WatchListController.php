@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\FilmsResource;
-use App\Models\Films;
+use App\Models\Film;
 use App\Models\User;
 use App\Models\WatchList;
 use Illuminate\Support\Facades\Auth;
@@ -28,7 +28,7 @@ class WatchListController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Films $film)
+    public function store(Film $film)
     {
         Auth::user()->watchlist()->attach($film->id);
         return response()->json([
@@ -36,7 +36,7 @@ class WatchListController extends Controller
         ],200);
     }
 
-    public function destroy(Films $film)
+    public function destroy(Film $film)
     {
         Auth::user()->watchlist()->detach($film->id);
         return response()->json([

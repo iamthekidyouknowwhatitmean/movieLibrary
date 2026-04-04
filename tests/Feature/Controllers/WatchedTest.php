@@ -3,7 +3,7 @@
 namespace Tests\Feature\Controllers;
 
 use App\Models\User;
-use App\Models\Films;
+use App\Models\Film;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -20,7 +20,7 @@ class WatchedTest extends TestCase
         parent::setUp();
 
         $this->user = User::factory()->create();
-        $this->film = Films::factory()->create();
+        $this->film = Film::factory()->create();
         $this->actingAs($this->user);
     }
     /**

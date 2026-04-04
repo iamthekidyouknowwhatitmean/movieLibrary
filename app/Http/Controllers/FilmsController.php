@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Filters\FilmsFilter;
-use App\Models\Films;
+use App\Models\Film;
 use App\Models\Genre;
 use App\Services\TmdbService;
 use Illuminate\Http\Request;
@@ -15,7 +15,7 @@ class FilmsController extends Controller
      */
     public function index(FilmsFilter $filters)
     {
-        $films = Films::filter($filters)->paginate(20);
+        $films = Film::filter($filters)->paginate(20);
 
         return response()->json($films);
     }
@@ -38,10 +38,10 @@ class FilmsController extends Controller
         ]);
 
         // надо проверить нет ли такого уже в базе
-        if (Films::find($attributes)) {
+        if (Film::find($attributes)) {
             dd('Такой фильм уже есть в базе!');
         } else {
-            Films::create($attributes);
+            Film::create($attributes);
         }
 
         return redirect('/films');
@@ -50,7 +50,7 @@ class FilmsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Films $film)
+    public function show(Film $film)
     {
         return view('films.show', ['film' => $film]);
     }
@@ -58,7 +58,7 @@ class FilmsController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Films $film)
+    public function edit(Film $film)
     {
         return view('films.edit', ['film' => $film]);
     }
@@ -66,7 +66,7 @@ class FilmsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Films $film)
+    public function update(Request $request, Film $film)
     {
         $attributes = $request->validate([
             'name' => ['required']
@@ -78,7 +78,7 @@ class FilmsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Films $film)
+    public function destroy(Film $film)
     {
         $film->delete();
         return redirect('/films');
@@ -87,7 +87,7 @@ class FilmsController extends Controller
     public function search(Request $request)
     {
         $query = $request->input('search');
-        $films = $query ? Films::search($query)->get() : collect();
+        $films = $query ? Film::search($query)->get() : collect();
 
         return view('films.search', [
             'query' => $query,

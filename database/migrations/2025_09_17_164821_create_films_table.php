@@ -12,12 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('films', function (Blueprint $table) {
-            $table->unsignedBigInteger('id')->primary();
+            $table->id();
             $table->enum('category',['popular','top_rated','upcoming','now_playing']);
             $table->string('title');
             $table->date('release_date');
-            $table->string('poster_path');
-            $table->string('backdrop_path');
+            $table->string('poster_path')->nullable();
+            $table->string('backdrop_path')->nullable();
             $table->text('overview');
             $table->boolean('adult')->default(false);
             $table->float('popularity');

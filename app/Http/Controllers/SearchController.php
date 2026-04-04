@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Films;
+use App\Models\Film;
 use App\Models\Review;
 use App\Models\User;
 
@@ -15,7 +15,7 @@ class SearchController extends Controller
 
         return response()->json([
             'films' => $type === null || $type === 'films'
-            ? Films::search($value)->paginate(20)
+            ? Film::search($value)->paginate(20)
             : [],
 
             'users' => $type === null || $type === 'users'

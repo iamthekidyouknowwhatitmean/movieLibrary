@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\LoginUserRequest;
 use App\Models\User;
 use App\Traits\ApiResponses;
 use Illuminate\Http\Request;
@@ -13,8 +12,13 @@ class AuthController extends Controller
 {
     use ApiResponses;
 
-    public function login(LoginUserRequest $request)
+    public function login(Request $request)
     {
+        $request->validate([
+            'email' => 'required|string|email',
+            'password' => 'required|min:8'
+        ]);
+
         if(!Auth::attempt($request->only('email','password')))
         {
             return $this->error('Invalid credentials',401);

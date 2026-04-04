@@ -23,22 +23,18 @@ use Laravel\Scout\Searchable;
  * @property string|null $remember_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Films> $films
- * @property-read int|null $films_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Films> $likedFilms
- * @property-read int|null $liked_films_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Activity> $activities
+ * @property-read int|null $activities_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, User> $followers
+ * @property-read int|null $followers_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, User> $following
+ * @property-read int|null $following_count
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Rating> $ratings
- * @property-read int|null $ratings_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Review> $reviews
  * @property-read int|null $reviews_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
  * @property-read int|null $tokens_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Films> $watched
- * @property-read int|null $watched_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Films> $watchlist
- * @property-read int|null $watchlist_count
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()

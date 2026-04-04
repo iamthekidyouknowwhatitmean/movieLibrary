@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Films;
+use App\Models\Film;
 use App\Models\Genre;
 use App\Models\Languages;
 use App\Models\ProductionCountries;
@@ -62,7 +62,7 @@ class ImportMoviesFromTmdb extends Command
         array $batchOfLanguages,
         array $batchOfLanguagesPivot
     ) {
-        Films::upsert(
+        Film::upsert(
             $batchOfFilms,
             ['id'],
             ['title','release_date','poster_path','backdrop_path','overview','adult','budget','revenue',

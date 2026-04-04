@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Films;
+use App\Models\Film;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('user_film', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(User::class);
-            $table->foreignIdFor(Films::class);
+            $table->foreignIdFor(Film::class);
             $table->timestamps();
         });
     }

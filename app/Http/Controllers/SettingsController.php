@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\SettingsRequest;
 use App\Traits\ApiResponses;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Request;
 
 class SettingsController extends Controller
 {
@@ -19,8 +19,13 @@ class SettingsController extends Controller
         return $this->ok('Данные успешно обновлены!');
     }
 
-    public function changePassword(ChangePasswordRequest $request)
+    public function changePassword(Request $request)
     {
+        $request->validate([
+            'currentPassword' => 'required|string',
+            'newPassword' => 'required|string|min:8|confirmed|different:currentPassword',
+        ]);
+
         if(!Hash::check($request->input('currentPassword'), Auth::user()->password))
         {
             return $this->error('Текущий пароль неверен!', 422);

@@ -11,51 +11,60 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
  * @property int $id
- * @property int $tmdb_id
  * @property string $category
  * @property string $title
- * @property string|null $release_date
+ * @property string $release_date
  * @property string|null $poster_path
  * @property string|null $backdrop_path
- * @property string|null $overview
+ * @property string $overview
  * @property int $adult
  * @property float $popularity
- * @property float $vote_average
- * @property float $vote_count
+ * @property float|null $vote_average
+ * @property int|null $vote_count
+ * @property int $budget
+ * @property int $revenue
+ * @property int $runtime
+ * @property string $status
+ * @property string $tagline
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Activity> $activities
+ * @property-read int|null $activities_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductionCountries> $countries
+ * @property-read int|null $countries_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Genre> $genres
  * @property-read int|null $genres_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $likedByUsers
  * @property-read int|null $liked_by_users_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Rating> $ratings
- * @property-read int|null $ratings_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Review> $reviews
  * @property-read int|null $reviews_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $users
- * @property-read int|null $users_count
- * @method static \Database\Factories\FilmsFactory factory($count = null, $state = [])
- * @method static Builder<static>|Films filter(\App\Http\Filters\QueryFilter $filters)
- * @method static Builder<static>|Films newModelQuery()
- * @method static Builder<static>|Films newQuery()
- * @method static Builder<static>|Films query()
- * @method static Builder<static>|Films whereAdult($value)
- * @method static Builder<static>|Films whereBackdropPath($value)
- * @method static Builder<static>|Films whereCategory($value)
- * @method static Builder<static>|Films whereCreatedAt($value)
- * @method static Builder<static>|Films whereId($value)
- * @method static Builder<static>|Films whereOverview($value)
- * @method static Builder<static>|Films wherePopularity($value)
- * @method static Builder<static>|Films wherePosterPath($value)
- * @method static Builder<static>|Films whereReleaseDate($value)
- * @method static Builder<static>|Films whereTitle($value)
- * @method static Builder<static>|Films whereTmdbId($value)
- * @method static Builder<static>|Films whereUpdatedAt($value)
- * @method static Builder<static>|Films whereVoteAverage($value)
- * @method static Builder<static>|Films whereVoteCount($value)
+ * @method static \Database\Factories\FilmFactory factory($count = null, $state = [])
+ * @method static Builder<static>|Film filter(\App\Http\Filters\QueryFilter $filters)
+ * @method static Builder<static>|Film newModelQuery()
+ * @method static Builder<static>|Film newQuery()
+ * @method static Builder<static>|Film query()
+ * @method static Builder<static>|Film search(string $terms)
+ * @method static Builder<static>|Film whereAdult($value)
+ * @method static Builder<static>|Film whereBackdropPath($value)
+ * @method static Builder<static>|Film whereBudget($value)
+ * @method static Builder<static>|Film whereCategory($value)
+ * @method static Builder<static>|Film whereCreatedAt($value)
+ * @method static Builder<static>|Film whereId($value)
+ * @method static Builder<static>|Film whereOverview($value)
+ * @method static Builder<static>|Film wherePopularity($value)
+ * @method static Builder<static>|Film wherePosterPath($value)
+ * @method static Builder<static>|Film whereReleaseDate($value)
+ * @method static Builder<static>|Film whereRevenue($value)
+ * @method static Builder<static>|Film whereRuntime($value)
+ * @method static Builder<static>|Film whereStatus($value)
+ * @method static Builder<static>|Film whereTagline($value)
+ * @method static Builder<static>|Film whereTitle($value)
+ * @method static Builder<static>|Film whereUpdatedAt($value)
+ * @method static Builder<static>|Film whereVoteAverage($value)
+ * @method static Builder<static>|Film whereVoteCount($value)
  * @mixin \Eloquent
  */
-class Films extends Model
+class Film extends Model
 {
     /** @use HasFactory<\Database\Factories\FilmsFactory> */
     use HasFactory;
@@ -65,7 +74,6 @@ class Films extends Model
     //     'name'
     // ];
     protected $guarded = [];
-    public $incrementing = false;
     protected $keyType = 'int';
 
     public function toSearchableArray()

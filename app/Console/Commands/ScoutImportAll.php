@@ -25,7 +25,7 @@ class ScoutImportAll extends Command
      */
     public function handle()
     {
-        $this->call('scout:import', ['model' => \App\Models\Films::class]);
+        $this->call('scout:import', ['model' => \App\Models\Film::class]);
         $this->call('scout:import', ['model' => \App\Models\User::class]);
         $this->call('scout:import', ['model' => \App\Models\Review::class]);
 

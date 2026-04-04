@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Models\Review;
-use App\Models\Films;
+use App\Models\Film;
 use App\Models\Activity;
 use Illuminate\Support\Facades\Auth;
 
@@ -11,7 +11,7 @@ class ReviewService
 {
     public function store(int $filmId,?string $body,?int $rating)
     {
-        $film = Films::find($filmId);
+        $film = Film::find($filmId);
         $newAverage = round(($film->vote_average * $film->vote_count) + $rating / ($film->vote_count + 1),3);
         $film->update([
            'vote_average' => $newAverage,
@@ -36,7 +36,7 @@ class ReviewService
     public function update(int $filmId,?string $body,?int $rating,bool $like = false)
     {
         $review = Auth::user()->reviews()->where('film_id',$filmId)->first();
-        $film = Films::find($filmId);
+        $film = Film::find($filmId);
         $newAverage = round((($film->vote_average * $film->vote_count) - $review->rating + $rating) / ($film->vote_count),3);
         $film->update([
             'vote_average' => $newAverage,
@@ -60,7 +60,7 @@ class ReviewService
     public function destroy($reviewId)
     {
         $review = Review::find($reviewId);
-        $film = Films::find($review->film_id);
+        $film = Film::find($review->film_id);
 
         $newAverage = round((($film->vote_average * $film->vote_count) - $review->rating) / ($film->vote_count - 1),3);
         $film->update([
